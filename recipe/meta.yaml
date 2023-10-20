@@ -6,7 +6,7 @@ package:
   version: {{ version }}
 
 source:
-  url: file:///Users/jolivieri/repos/aggregate/rbcl-feedstock/rbcl-1.0.1.tar.gz
+  url: https://pypi.python.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: a0bf43234a2987b67b451d1e61efe5666c12a236001e8ace788307ce5f2ad698
 
 build:
