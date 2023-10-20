@@ -10,9 +10,8 @@ source:
   sha256: a0bf43234a2987b67b451d1e61efe5666c12a236001e8ace788307ce5f2ad698
 
 build:
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv
   number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
 requirements:
   host:
@@ -32,9 +31,14 @@ test:
     - pip
 
 about:
-  summary: Python library that bundles libsodium and provides wrappers for its Ristretto group functions.
+  home: https://github.com/nthparty/rbcl
   license: MIT
   license_file: LICENSE
+  license_family: MIT
+  summary: Python library that bundles libsodium and provides wrappers for its Ristretto group functions.
+  description: Python library that bundles libsodium and provides wrappers for its Ristretto group functions.
+  doc_url: https://github.com/nthparty/rbcl
+  dev_url: https://github.com/nthparty/rbcl
 
 extra:
   recipe-maintainers:
