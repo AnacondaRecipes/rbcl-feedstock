@@ -19,6 +19,7 @@ requirements:
     - setuptools 67.8.0  # because upstream requires ~=67.6
     - pystache 0.6.5
     - pip
+    - wheel
   run:
     - python
 
