@@ -14,6 +14,8 @@ build:
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
 requirements:
+  build:
+    - make  # [not win]
   host:
     - python
     - setuptools 67.8.0  # because upstream requires ~=67.6
