@@ -20,6 +20,7 @@ requirements:
     - pystache 0.6.5
     - pip
     - wheel
+    - libsodium 1.0.18
   run:
     - python
     - barriers
