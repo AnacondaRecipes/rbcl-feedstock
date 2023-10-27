@@ -9,8 +9,8 @@ source:
   url: https://pypi.python.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: a0bf43234a2987b67b451d1e61efe5666c12a236001e8ace788307ce5f2ad698
   patches:
-    - 0001-do-not-compile-binary.patch
-    - 0002-import-appropriate-libsodium-binary-depending-on-sys.patch
+    - 0001-do-not-bundle-libsodium-into-_sodium.py.patch
+    - 0002-do-not-depend-on-pystache.patch
 
 build:
   number: 0
@@ -18,20 +18,21 @@ build:
     - mkdir -p $SRC_DIR/build/temp/lib  # [not win]
     - mkdir -p %SRC_DIR%\build\temp\lib  # [win]
     - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
-    - cp $SRC_DIR/build/lib/{{ name }}/_sodium.py $SP_DIR/{{ name }}/_sodium.py  # [not win]
-    - cp %SRC_DIR%\build\lib\{{ name }}\_sodium.py %SP_DIR%\{{ name }}\_sodium.py  # [win]
+    - echo "from ctypes import cdll; import os; import sys; _sodium = cdll.LoadLibrary(os.path.join(sys.prefix, 'lib', 'libsodium.dylib'))" > $SP_DIR/{{ name }}/_sodium.py  # [osx]
+    - echo "from ctypes import cdll; import os; import sys; _sodium = cdll.LoadLibrary(os.path.join(sys.prefix, 'lib', 'libsodium.so'))" > $SP_DIR/{{ name }}/_sodium.py  # [linux]
+    - echo "from ctypes import cdll; import os; import sys; _sodium = cdll.LoadLibrary(os.path.join(sys.prefix, 'bin', 'libsodium.dll'))" > %SP_DIR%\{{ name }}\_sodium.py  # [win]
 
 requirements:
   host:
     - python
     - setuptools
-    - pystache 0.6.5
     - pip
     - wheel
     - libsodium 1.0.18
   run:
     - python
     - barriers
+    - libsodium
 
 test:
   imports:
