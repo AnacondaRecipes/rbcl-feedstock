@@ -32,7 +32,7 @@ index fdc04ca..c425751 100644
 +    if sys.platform == 'darwin':
 +        path_libsodium = os.path.join(sys.prefix, 'lib/libsodium.dylib') # for macOS
 +    elif sys.platform == 'win32':
-+        path_libsodium = os.path.join(sys.prefix, 'lib/libsodium.dll') # for Win
++        path_libsodium = os.path.join(sys.prefix, 'bin/libsodium.dll') # for Win
 +    else:
 +        path_libsodium = os.path.join(sys.prefix, 'lib/libsodium.so') # for linux
 +
