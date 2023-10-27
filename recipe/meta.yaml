@@ -18,7 +18,7 @@ build:
     - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
     - echo "from ctypes import cdll; import os; import sys; _sodium = cdll.LoadLibrary(os.path.join(sys.prefix, 'lib', 'libsodium.dylib'))" > $SP_DIR/{{ name }}/_sodium.py  # [osx]
     - echo "from ctypes import cdll; import os; import sys; _sodium = cdll.LoadLibrary(os.path.join(sys.prefix, 'lib', 'libsodium.so'))" > $SP_DIR/{{ name }}/_sodium.py  # [linux]
-    - echo from ctypes import cdll; import os; import sys; _sodium = cdll.LoadLibrary(os.environ['LIBRARY_BIN'], 'libsodium.dll')) > %SP_DIR%\{{ name }}\_sodium.py  # [win]
+    - echo from ctypes import cdll; import os; import sys; _sodium = cdll.LoadLibrary(os.environ['LIBRARY_BIN'], 'libsodium.dll') > %SP_DIR%\{{ name }}\_sodium.py  # [win]
 
 requirements:
   host:
