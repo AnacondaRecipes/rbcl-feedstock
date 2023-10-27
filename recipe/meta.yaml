@@ -10,8 +10,7 @@ source:
   sha256: a0bf43234a2987b67b451d1e61efe5666c12a236001e8ace788307ce5f2ad698
   patches:
     - 0001-do-not-compile-binary.patch
-    - 0002-look-for-binary-in-src-dir.patch
-    - 0003-import-appropriate-libsodium-binary-depending-on-sys.patch
+    - 0002-import-appropriate-libsodium-binary-depending-on-sys.patch
 
 build:
   number: 0

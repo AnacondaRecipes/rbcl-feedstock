@@ -1,6 +1,6 @@
-From 42f8d4975a7684c038b51460e2d0724326cb98c4 Mon Sep 17 00:00:00 2001
+From 9df5eb70b6d5ac09e1d6e2fbfea72184614ca3c7 Mon Sep 17 00:00:00 2001
 From: Jack Olivieri <jolivieri@anaconda.com>
-Date: Fri, 27 Oct 2023 13:39:31 +0200
+Date: Thu, 26 Oct 2023 11:52:54 +0200
 Subject: [PATCH] import appropriate libsodium binary depending on system
 
 ---
@@ -8,14 +8,14 @@ Subject: [PATCH] import appropriate libsodium binary depending on system
  1 file changed, 20 insertions(+), 14 deletions(-)
 
 diff --git a/src/rbcl/_sodium_build.py b/src/rbcl/_sodium_build.py
-index ec0f521..f95db06 100644
+index fdc04ca..c425751 100644
 --- a/src/rbcl/_sodium_build.py
 +++ b/src/rbcl/_sodium_build.py
 @@ -82,20 +82,26 @@ def emit_libsodium():
      Emit compiled libsodium binary as hexadecimal string in ``_sodium.py`` file.
      """
      # Extract path to compiled libsodium binary.
--    path_libsodium = os.path.join(os.environ['SRC_DIR'], 'build/temp/lib/libsodium.so') # Default for non-Windows builds.
+-    path_libsodium = 'build/temp/lib/libsodium.so' # Default for non-Windows builds.
 -    if sys.platform == 'win32':
 -        path_directory = (
 -            os.environ.get('LIB', None)
