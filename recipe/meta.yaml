@@ -8,10 +8,25 @@ package:
 source:
   url: https://pypi.python.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: a0bf43234a2987b67b451d1e61efe5666c12a236001e8ace788307ce5f2ad698
+  patches:
+    - 0001-do-not-compile-binary.patch
+    - 0002-look-for-binary-in-src-dir.patch
+    - 0003-import-appropriate-libsodium-binary-depending-on-sys.patch
 
 build:
   number: 0
-  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  script:
+    - mkdir -p $SRC_DIR/build/temp/lib  # [not win]
+    - mkdir -p %SRC_DIR%\build\temp\lib  # [win]
+    - cp $PREFIX/lib/libsodium.* $SRC_DIR/build/temp/lib  # [not win]
+    - cp %LIBRARY_LIB%\libsodium.* %SRC_DIR%\build\temp\lib  # [win]
+    # - lipo $PREFIX/lib/libsodium.a -thin arm64 -output $SRC_DIR/build/temp/libsodium.a  # [osx and arm64]
+    # - lipo $PREFIX/lib/libsodium.a -thin x86_64 -output $SRC_DIR/build/temp/libsodium.a  # [osx and x86_64]
+    # - ar -x $SRC_DIR/build/temp/lib/libsodium.a # [not win]
+    # - {{ c_compiler }} -shared $SRC_DIR/*.o -o $SRC_DIR/build/temp/lib/libsodium.so  # [not win]
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+    - cp $SRC_DIR/build/lib/{{ name }}/_sodium.py $SP_DIR/{{ name }}/_sodium.py  # [not win]
+    - cp $%SRC_DIR%\build\lib\{{ name }}\_sodium.py %SP_DIR%\{{ name }}\_sodium.py  # [win]
 
 requirements:
   host:

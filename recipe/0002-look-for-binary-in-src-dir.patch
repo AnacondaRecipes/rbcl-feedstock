@@ -1,0 +1,25 @@
+From 50c911ce366f3fabc780cb0eabafded451c87e6d Mon Sep 17 00:00:00 2001
+From: Jack Olivieri <jolivieri@anaconda.com>
+Date: Thu, 26 Oct 2023 11:52:54 +0200
+Subject: [PATCH 2/2] look for binary in src dir
+
+---
+ src/rbcl/_sodium_build.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/rbcl/_sodium_build.py b/src/rbcl/_sodium_build.py
+index fdc04ca..ec0f521 100644
+--- a/src/rbcl/_sodium_build.py
++++ b/src/rbcl/_sodium_build.py
+@@ -82,7 +82,7 @@ def emit_libsodium():
+     Emit compiled libsodium binary as hexadecimal string in ``_sodium.py`` file.
+     """
+     # Extract path to compiled libsodium binary.
+-    path_libsodium = 'build/temp/lib/libsodium.so' # Default for non-Windows builds.
++    path_libsodium = os.path.join(os.environ['SRC_DIR'], 'build/temp/lib/libsodium.so') # Default for non-Windows builds.
+     if sys.platform == 'win32':
+         path_directory = (
+             os.environ.get('LIB', None)
+-- 
+2.39.3 (Apple Git-145)
+

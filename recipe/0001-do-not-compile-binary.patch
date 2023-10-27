@@ -1,0 +1,187 @@
+From 03462db0abcc9040d1ad7ab308fa1e839cfeafc7 Mon Sep 17 00:00:00 2001
+From: Jack Olivieri <jolivieri@anaconda.com>
+Date: Wed, 25 Oct 2023 14:35:43 +0200
+Subject: [PATCH 1/2] do not compile binary
+
+---
+ src/rbcl/_sodium_build.py | 164 +++++++++++++++++++-------------------
+ 1 file changed, 82 insertions(+), 82 deletions(-)
+
+diff --git a/src/rbcl/_sodium_build.py b/src/rbcl/_sodium_build.py
+index 44f813b..fdc04ca 100644
+--- a/src/rbcl/_sodium_build.py
++++ b/src/rbcl/_sodium_build.py
+@@ -164,88 +164,88 @@ class Install(install):
+     def run(self):
+         install.run(self)
+ 
+-        # On Windows, only a precompiled dynamic library file is used.
+-        if sys.platform == 'win32':
+-            emit_libsodium()
+-            return
+-
+-        # Confirm that make utility can be found.
+-        found = False
+-        if not os.environ.get('PATH', None) is None:
+-            for p in os.environ.get('PATH', '').split(os.pathsep):
+-                p = os.path.join(p, 'make')
+-                if os.access(p, os.X_OK):
+-                    found = True
+-                for e in filter(None, os.environ.get('PATHEXT', '').split(os.pathsep)):
+-                    if os.access(p + e, os.X_OK):
+-                        found = True
+-        if not found:
+-            raise RuntimeError('make utility cannot be found')
+-
+-        # Reproduce Python's build environment variables.
+-        os.environ.update({
+-            variable: value
+-            for (variable, value) in get_config_vars().items()
+-            if (
+-                variable in ['LDFLAGS', 'CFLAGS', 'CC', 'CCSHARED', 'LDSHARED'] and
+-                variable not in os.environ
+-            )
+-        })
+-
+-        # Ensure the temporary build directory exists.
+-        build_temp = os.path.abspath(Install.BUILD_TEMP)
+-        try:
+-            os.makedirs(build_temp)
+-        except OSError as e:
+-            if e.errno != errno.EEXIST:
+-                raise
+-
+-        # Retrieve (if necessary) and extract the libsodium source tree.
+-        libsodium_folder = prepare_libsodium_source_tree()
+-
+-        # Ensure that all executable files have the necessary permissions.
+-        for filename in [
+-            'autogen.sh', 'compile', 'configure', 'depcomp', 'install-sh',
+-            'missing', 'msvc-scripts/process.bat', 'test/default/wintest.bat',
+-        ]:
+-            os.chmod(os.path.relpath(libsodium_folder + '/' + filename), 0o755)
+-
+-        # Configure libsodium, build it as a shared library file, check it,
+-        # and install it.
+-        subprocess.check_call(
+-            [os.path.abspath(os.path.relpath('src/rbcl/libsodium/configure'))] +
+-            [
+-                '--disable-shared', '--enable-static',
+-                '--disable-debug', '--disable-dependency-tracking', '--with-pic',
+-            ] +
+-            (['--disable-ssp'] if platform.system() == 'SunOS' else []) +
+-            ['--prefix', os.path.abspath(Install.BUILD_TEMP)],
+-            cwd=build_temp
+-        )
+-        make_args = os.environ.get('LIBSODIUM_MAKE_ARGS', '').split()
+-        subprocess.check_call(['make'] + make_args, cwd=build_temp)
+-        subprocess.check_call(['make', 'check'] + make_args, cwd=build_temp)
+-        subprocess.check_call(['make', 'install'] + make_args, cwd=build_temp)
+-
+-        # Build dynamic (shared object) library file from the statically compiled
+-        # archive binary file.
+-        lib_temp = os.path.join(Install.BUILD_TEMP, 'lib')
+-
+-        # Different macOS GitHub runners contain either single or multi-target static
+-        # archives.
+-        if sys.platform == 'darwin':
+-            extract_libsodium_from_static_archive(lib_temp)
+-
+-        # Explode the archive into many individual object files.
+-        subprocess.check_call(['ar', '-x', 'libsodium.a'], cwd=lib_temp)
+-
+-        object_file_relpaths = glob.glob(lib_temp + '/*.o')
+-        object_file_names = [o.split('/')[-1] for o in object_file_relpaths]
+-        # Invoke gcc to (re-)link dynamically.
+-        subprocess.check_call(
+-            ['gcc', '-shared'] + object_file_names + ['-o', 'libsodium.so'],
+-            cwd=lib_temp
+-        )
++        # # On Windows, only a precompiled dynamic library file is used.
++        # if sys.platform == 'win32':
++        #     emit_libsodium()
++        #     return
++
++        # # Confirm that make utility can be found.
++        # found = False
++        # if not os.environ.get('PATH', None) is None:
++        #     for p in os.environ.get('PATH', '').split(os.pathsep):
++        #         p = os.path.join(p, 'make')
++        #         if os.access(p, os.X_OK):
++        #             found = True
++        #         for e in filter(None, os.environ.get('PATHEXT', '').split(os.pathsep)):
++        #             if os.access(p + e, os.X_OK):
++        #                 found = True
++        # if not found:
++        #     raise RuntimeError('make utility cannot be found')
++
++        # # Reproduce Python's build environment variables.
++        # os.environ.update({
++        #     variable: value
++        #     for (variable, value) in get_config_vars().items()
++        #     if (
++        #         variable in ['LDFLAGS', 'CFLAGS', 'CC', 'CCSHARED', 'LDSHARED'] and
++        #         variable not in os.environ
++        #     )
++        # })
++
++        # # Ensure the temporary build directory exists.
++        # build_temp = os.path.abspath(Install.BUILD_TEMP)
++        # try:
++        #     os.makedirs(build_temp)
++        # except OSError as e:
++        #     if e.errno != errno.EEXIST:
++        #         raise
++
++        # # Retrieve (if necessary) and extract the libsodium source tree.
++        # libsodium_folder = prepare_libsodium_source_tree()
++
++        # # Ensure that all executable files have the necessary permissions.
++        # for filename in [
++        #     'autogen.sh', 'compile', 'configure', 'depcomp', 'install-sh',
++        #     'missing', 'msvc-scripts/process.bat', 'test/default/wintest.bat',
++        # ]:
++        #     os.chmod(os.path.relpath(libsodium_folder + '/' + filename), 0o755)
++
++        # # Configure libsodium, build it as a shared library file, check it,
++        # # and install it.
++        # subprocess.check_call(
++        #     [os.path.abspath(os.path.relpath('src/rbcl/libsodium/configure'))] +
++        #     [
++        #         '--disable-shared', '--enable-static',
++        #         '--disable-debug', '--disable-dependency-tracking', '--with-pic',
++        #     ] +
++        #     (['--disable-ssp'] if platform.system() == 'SunOS' else []) +
++        #     ['--prefix', os.path.abspath(Install.BUILD_TEMP)],
++        #     cwd=build_temp
++        # )
++        # make_args = os.environ.get('LIBSODIUM_MAKE_ARGS', '').split()
++        # subprocess.check_call(['make'] + make_args, cwd=build_temp)
++        # subprocess.check_call(['make', 'check'] + make_args, cwd=build_temp)
++        # subprocess.check_call(['make', 'install'] + make_args, cwd=build_temp)
++
++        # # Build dynamic (shared object) library file from the statically compiled
++        # # archive binary file.
++        # lib_temp = os.path.join(Install.BUILD_TEMP, 'lib')
++
++        # # Different macOS GitHub runners contain either single or multi-target static
++        # # archives.
++        # if sys.platform == 'darwin':
++        #     extract_libsodium_from_static_archive(lib_temp)
++
++        # # Explode the archive into many individual object files.
++        # subprocess.check_call(['ar', '-x', 'libsodium.a'], cwd=lib_temp)
++
++        # object_file_relpaths = glob.glob(lib_temp + '/*.o')
++        # object_file_names = [o.split('/')[-1] for o in object_file_relpaths]
++        # # Invoke gcc to (re-)link dynamically.
++        # subprocess.check_call(
++        #     ['gcc', '-shared'] + object_file_names + ['-o', 'libsodium.so'],
++        #     cwd=lib_temp
++        # )
+ 
+         # Emit libsodium binary to ``_sodium.py`` file as a hex-encoded string.
+         emit_libsodium()
+-- 
+2.39.3 (Apple Git-145)
+

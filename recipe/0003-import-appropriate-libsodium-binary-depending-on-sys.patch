@@ -1,0 +1,57 @@
+From 42f8d4975a7684c038b51460e2d0724326cb98c4 Mon Sep 17 00:00:00 2001
+From: Jack Olivieri <jolivieri@anaconda.com>
+Date: Fri, 27 Oct 2023 13:39:31 +0200
+Subject: [PATCH] import appropriate libsodium binary depending on system
+
+---
+ src/rbcl/_sodium_build.py | 34 ++++++++++++++++++++--------------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
+
+diff --git a/src/rbcl/_sodium_build.py b/src/rbcl/_sodium_build.py
+index ec0f521..f95db06 100644
+--- a/src/rbcl/_sodium_build.py
++++ b/src/rbcl/_sodium_build.py
+@@ -82,20 +82,26 @@ def emit_libsodium():
+     Emit compiled libsodium binary as hexadecimal string in ``_sodium.py`` file.
+     """
+     # Extract path to compiled libsodium binary.
+-    path_libsodium = os.path.join(os.environ['SRC_DIR'], 'build/temp/lib/libsodium.so') # Default for non-Windows builds.
+-    if sys.platform == 'win32':
+-        path_directory = (
+-            os.environ.get('LIB', None)
+-            if os.environ.get('LIB', None) is not None else
+-            os.path.join(os.environ['WINDIR'], 'System32') # Windows default.
+-        )
+-        path_libsodium = os.path.join(path_directory, 'libsodium.dll')
+-        if not os.path.exists(path_libsodium):
+-            raise EnvironmentError(
+-                'libsodium DLL not found at ' + path_libsodium + ', ' +
+-                'set environment variable $LIB to path of directory ' +
+-                'containing libsodium DLL'
+-            )
++    if sys.platform == 'darwin':
++        path_libsodium = os.path.join(os.environ['SRC_DIR'], 'build/temp/lib/libsodium.dylib') # for macOS
++    elif sys.platform == 'win32':
++        path_libsodium = os.path.join(os.environ['SRC_DIR'], 'build/temp/lib/libsodium.lib') # for Win
++    else:
++        path_libsodium = os.path.join(os.environ['SRC_DIR'], 'build/temp/lib/libsodium.so') # for linux
++
++    # if sys.platform == 'win32':
++    #     path_directory = (
++    #         os.environ.get('LIB', None)
++    #         if os.environ.get('LIB', None) is not None else
++    #         os.path.join(os.environ['WINDIR'], 'System32') # Windows default.
++    #     )
++    #     path_libsodium = os.path.join(path_directory, 'libsodium.dll')
++    #     if not os.path.exists(path_libsodium):
++    #         raise EnvironmentError(
++    #             'libsodium DLL not found at ' + path_libsodium + ', ' +
++    #             'set environment variable $LIB to path of directory ' +
++    #             'containing libsodium DLL'
++    #         )
+ 
+     # pylint: disable=consider-using-with
+     data = {'SODIUM_HEX': open(path_libsodium, 'rb').read().hex()}
+-- 
+2.39.3 (Apple Git-145)
+
