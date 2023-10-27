@@ -19,6 +19,8 @@ build:
     - echo "from ctypes import cdll; import os; import sys; _sodium = cdll.LoadLibrary(os.path.join(sys.prefix, 'lib', 'libsodium.dylib'))" > $SP_DIR/{{ name }}/_sodium.py  # [osx]
     - echo "from ctypes import cdll; import os; import sys; _sodium = cdll.LoadLibrary(os.path.join(sys.prefix, 'lib', 'libsodium.so'))" > $SP_DIR/{{ name }}/_sodium.py  # [linux]
     - echo from ctypes import cdll; import os; import sys; _sodium = cdll.LoadLibrary(os.path.join(os.environ['LIBRARY_BIN'], 'libsodium.dll')) > %SP_DIR%\{{ name }}\_sodium.py  # [win]
+    - rm $SP_DIR/{{ name }}/_sodium.tmpl   # [not win]
+    - rm %SP_DIR%\{{ name }}\_sodium.tmpl  # [win]
 
 requirements:
   host:
