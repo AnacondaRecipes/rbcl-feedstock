@@ -30,11 +30,11 @@ index fdc04ca..c425751 100644
 -                'containing libsodium DLL'
 -            )
 +    if sys.platform == 'darwin':
-+        path_libsodium = os.path.join(os.environ['SRC_DIR'], 'build/temp/lib/libsodium.dylib') # for macOS
++        path_libsodium = os.path.join(sys.prefix, 'lib/libsodium.dylib') # for macOS
 +    elif sys.platform == 'win32':
-+        path_libsodium = os.path.join(os.environ['SRC_DIR'], 'build/temp/lib/libsodium.dll') # for Win
++        path_libsodium = os.path.join(sys.prefix, 'lib/libsodium.dll') # for Win
 +    else:
-+        path_libsodium = os.path.join(os.environ['SRC_DIR'], 'build/temp/lib/libsodium.so') # for linux
++        path_libsodium = os.path.join(sys.prefix, 'lib/libsodium.so') # for linux
 +
 +    # if sys.platform == 'win32':
 +    #     path_directory = (
