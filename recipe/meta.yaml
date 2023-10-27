@@ -19,7 +19,7 @@ build:
     - mkdir -p $SRC_DIR/build/temp/lib  # [not win]
     - mkdir -p %SRC_DIR%\build\temp\lib  # [win]
     - cp $PREFIX/lib/libsodium.* $SRC_DIR/build/temp/lib  # [not win]
-    - cp %LIBRARY_LIB%\libsodium.lib %SRC_DIR%\build\temp\lib  # [win]
+    - cp %LIBRARY_BIN%\libsodium.dll %SRC_DIR%\build\temp\lib  # [win]
     - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
     - cp $SRC_DIR/build/lib/{{ name }}/_sodium.py $SP_DIR/{{ name }}/_sodium.py  # [not win]
     - cp %SRC_DIR%\build\lib\{{ name }}\_sodium.py %SP_DIR%\{{ name }}\_sodium.py  # [win]

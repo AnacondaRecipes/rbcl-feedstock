@@ -32,7 +32,7 @@ index ec0f521..f95db06 100644
 +    if sys.platform == 'darwin':
 +        path_libsodium = os.path.join(os.environ['SRC_DIR'], 'build/temp/lib/libsodium.dylib') # for macOS
 +    elif sys.platform == 'win32':
-+        path_libsodium = os.path.join(os.environ['SRC_DIR'], 'build/temp/lib/libsodium.lib') # for Win
++        path_libsodium = os.path.join(os.environ['SRC_DIR'], 'build/temp/lib/libsodium.dll') # for Win
 +    else:
 +        path_libsodium = os.path.join(os.environ['SRC_DIR'], 'build/temp/lib/libsodium.so') # for linux
 +
